@@ -38,6 +38,7 @@ internal class Program
 
     public static void GetList<T>(List<T> list) where T: IPrintForClasses
     {
+        if (list is null) return;
         {
             foreach (T item in list)
                 item.Print();
@@ -48,18 +49,8 @@ internal class Program
 
 class Factories : IPrintForClasses//Завод
 {
-    private string name = "Без названия";    // наименование
-    public string Name
-    {
-        get
-        {
-            return name;    // возвращаем значение свойства
-        }
-        set
-        {
-            name = value;   // устанавливаем новое значение свойства
-        }
-    }
+    public string Name { get; set; } = "Без названия";
+
     public string? Description { get; set; } // описание
     public void Print()
     {
@@ -68,20 +59,8 @@ class Factories : IPrintForClasses//Завод
 }
 
 class Units : IPrintForClasses // Установка
-{
-    private string name = "Без названия";    // наименование
-    public string Name
-    {
-        get
-        {
-            return name;    // возвращаем значение свойства
-        }
-        set
-        {
-            name = value;   // устанавливаем новое значение свойства
-        }
-    }
-
+{    
+    public string Name { get; set; } = "Без названия";
     public int? FactoryId { get; set; }      // производитель
 
     public void Print()
@@ -92,18 +71,7 @@ class Units : IPrintForClasses // Установка
 
 class Tanks : IPrintForClasses //Резервуар
 {
-    private string name = "Без названия";    // наименование
-    public string Name
-    {
-        get
-        {
-            return name;    // возвращаем значение свойства
-        }
-        set
-        {
-            name = value;   // устанавливаем новое значение свойства
-        }
-    }
+    public string Name { get; set; } = "Без названия";
 
     public int? Volume;                      // объём
     public int? Maxvolume;                   // максимальный объём
