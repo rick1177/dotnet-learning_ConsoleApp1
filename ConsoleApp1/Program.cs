@@ -36,15 +36,13 @@ internal class Program
 
     }
 
-    public static void GetList<T>(List<T> m_list) where T: IPrintForClasses
+    public static void GetList<T>(List<T> list) where T: IPrintForClasses
     {
-        if (m_list is null) return;
-        if ((m_list is List<Factories> || m_list is List<Units> || m_list is List<Tanks>) /*&& m_list is not null*/)
+        if (list is null) return;
+        if ((list is List<Factories> || list is List<Units> || list is List<Tanks>) /*&& m_list is not null*/)
         {
-            foreach (T i_list in m_list)
-                m_list.Print();
-
-
+            foreach (T item in list)
+                item.Print();
         }
     }
 }
