@@ -8,22 +8,22 @@ internal class Program
 
         // See https://aka.ms/new-console-template for more information
         List<Factories> Factories_list = new List<Factories>();
-        Factories_list.Add(new Factories { name = "НПЗ#1", description = "Первый нефтеперерабатывающий завод" });
-        Factories_list.Add(new Factories { name = "НПЗ#2", description = "Второй нефтеперерабатывающий завод" });
+        Factories_list.Add(new Factories { Name = "НПЗ#1", Description = "Первый нефтеперерабатывающий завод" });
+        Factories_list.Add(new Factories { Name = "НПЗ#2", Description = "Второй нефтеперерабатывающий завод" });
 
         List<Units> Units_list = new List<Units>();
-        Units_list.Add(new Units { name = "ГФУ-2", factoryId = 1 });
-        Units_list.Add(new Units { name = "АВТ-6", factoryId = 1 });
-        Units_list.Add(new Units { name = "АВТ-10", factoryId = 2 });
+        Units_list.Add(new Units { Name = "ГФУ-2", FactoryId = 1 });
+        Units_list.Add(new Units { Name = "АВТ-6", FactoryId = 1 });
+        Units_list.Add(new Units { Name = "АВТ-10", FactoryId = 2 });
 
 
         List<Tanks> Tanks_list = new List<Tanks>();
-        Tanks_list.Add(new Tanks { name = "Резервуар 1", volume = 1500, maxvolume = 2000, unitId = 1 });
-        Tanks_list.Add(new Tanks { name = "Резервуар 2", volume = 2500, maxvolume = 3000, unitId = 1 });
-        Tanks_list.Add(new Tanks { name = "Дополнительный резервуар 24", volume = 3000, maxvolume = 3000, unitId = 2 });
-        Tanks_list.Add(new Tanks { name = "Резервуар 35", volume = 3000, maxvolume = 3000, unitId = 2 });
-        Tanks_list.Add(new Tanks { name = "Резервуар 47", volume = 4000, maxvolume = 5000, unitId = 3 });
-        Tanks_list.Add(new Tanks { name = "Резервуар 256", volume = 500, maxvolume = 2000, unitId = 3 });
+        Tanks_list.Add(new Tanks { Name = "Резервуар 1", Volume = 1500, Maxvolume = 2000, UnitId = 1 });
+        Tanks_list.Add(new Tanks { Name = "Резервуар 2", Volume = 2500, Maxvolume = 3000, UnitId = 1 });
+        Tanks_list.Add(new Tanks { Name = "Дополнительный резервуар 24", Volume = 3000, Maxvolume = 3000, UnitId = 2 });
+        Tanks_list.Add(new Tanks { Name = "Резервуар 35", Volume = 3000, Maxvolume = 3000, UnitId = 2 });
+        Tanks_list.Add(new Tanks { Name = "Резервуар 47", Volume = 4000, Maxvolume = 5000, UnitId = 3 });
+        Tanks_list.Add(new Tanks { Name = "Резервуар 256", Volume = 500, Maxvolume = 2000, UnitId = 3 });
 
 
         GetList(Factories_list);
@@ -36,56 +36,58 @@ internal class Program
 
     }
 
-    public static void GetList<T>(T m_list) where T: IList
+    public static void GetList<T>(List<T> list) where T: IPrintForClasses
     {
-        if (m_list is null) return;
-        if ((m_list is List<Factories> || m_list is List<Units> || m_list is List<Tanks>) /*&& m_list is not null*/)
+        if (list is null) return;
         {
-            foreach (T i_list in m_list)
-                m_list.Print();
-
-
+            foreach (T item in list)
+                item.Print();
         }
     }
 }
 
 
-class Factories //Завод
+class Factories : IPrintForClasses//Завод
 {
-    public string name = "Без названия";    // наименование
-    public string description = "";         // описание
+    public string Name { get; set; } = "Без названия";
 
+    public string? Description { get; set; } // описание
     public void Print()
     {
-        Console.WriteLine($"Наименование: {name}  Описание: {description}");
+        Console.WriteLine($"Наименование: {Name}  Описание: {Description}");
     }
 }
 
-class Units // Установка
-{
-    public string name = "Без названия";    // наименование
-    public int factoryId;                   // производитель
+class Units : IPrintForClasses // Установка
+{    
+    public string Name { get; set; } = "Без названия";
+    public int? FactoryId { get; set; }      // производитель
 
     public void Print()
     {
-        Console.WriteLine($"Наименование: {name}  Производитель: {factoryId} ");
+        Console.WriteLine($"Наименование: {Name}  Производитель: {FactoryId} ");
     }
 }
 
-class Tanks //Резервуар
+class Tanks : IPrintForClasses //Резервуар
 {
-    public string name = "Без названия";    // наименование
-    public int volume;                      // объём
-    public int maxvolume;                   // максимальный объём
-    public int unitId;                      // товар
+    public string Name { get; set; } = "Без названия";
+
+    public int? Volume;                      // объём
+    public int? Maxvolume;                   // максимальный объём
+    public int? UnitId;                      // товар
 
     public void Print()
     {
         Console.WriteLine(
-            $"Наименование: {name}  " +
-            $"Объём: {volume}   " +
-            $"Максимальный объём: {maxvolume}   "  +
-            $"Номер товара: {unitId}");
+            $"Наименование: {Name}  " +
+            $"Объём: {Volume}   " +
+            $"Максимальный объём: {Maxvolume}   "  +
+            $"Номер товара: {UnitId}");
     }
 }
 
+interface IPrintForClasses
+{
+    void Print();
+}
