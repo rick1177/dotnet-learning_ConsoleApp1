@@ -36,7 +36,7 @@ internal class Program
 
     }
 
-    public static void GetList<T>(T m_list) where T: IList
+    public static void GetList<T>(List<T> m_list) where T: IPrintForClasses
     {
         if (m_list is null) return;
         if ((m_list is List<Factories> || m_list is List<Units> || m_list is List<Tanks>) /*&& m_list is not null*/)
@@ -50,7 +50,7 @@ internal class Program
 }
 
 
-class Factories //Завод
+class Factories : IPrintForClasses//Завод
 {
     public string name = "Без названия";    // наименование
     public string description = "";         // описание
@@ -61,7 +61,7 @@ class Factories //Завод
     }
 }
 
-class Units // Установка
+class Units : IPrintForClasses // Установка
 {
     public string name = "Без названия";    // наименование
     public int factoryId;                   // производитель
@@ -72,7 +72,7 @@ class Units // Установка
     }
 }
 
-class Tanks //Резервуар
+class Tanks : IPrintForClasses //Резервуар
 {
     public string name = "Без названия";    // наименование
     public int volume;                      // объём
@@ -89,3 +89,7 @@ class Tanks //Резервуар
     }
 }
 
+interface IPrintForClasses
+{
+    void Print();
+}
