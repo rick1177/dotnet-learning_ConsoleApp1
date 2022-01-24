@@ -26,17 +26,36 @@ internal class Program
         Tanks_list.Add(new Tanks { Name = "Резервуар 256", Volume = 500, Maxvolume = 2000, UnitId = 3 });
 
 
-        GetList(Factories_list);
+        PrintList(Factories_list);
+        var items = NumderOfListElements(Factories_list);
+        Console.WriteLine($"ИТОГО количество предприятий: {items}");
+
         Console.WriteLine("\n");
-        GetList(Units_list);
+        PrintList(Units_list);
+        items = NumderOfListElements(Units_list);
+        Console.WriteLine($"ИТОГО количество установок: {items}");
+        Console.WriteLine("Попытка поиска 1");
+        var listresult = FindByName(Units_list, "АВТ-6");
+        Console.WriteLine("Попытка поиска 2");
+        listresult = FindByName(Units_list, "АВТ");
+
         Console.WriteLine("\n");
-        GetList(Tanks_list);
+        PrintList(Tanks_list);
+        items = NumderOfListElements(Tanks_list);
+        Console.WriteLine($"ИТОГО количество резервуаров: {items}");
+        Console.WriteLine("\n");
+        Console.WriteLine("\n");
+
+        FindAllByRelatedElement(Units_list, "ГФУ-2", "FactoryId", Factories_list);
 
         //Tanks_list[0].Print();
 
     }
 
-    public static void GetList<T>(List<T> list) where T: IPrintForClasses
+    /// <summary>
+    ///  Данная функция выводит в консоль отправляемый список инстансов класса
+    /// </summary>
+    public static void PrintList<T>(List<T> list) where T: IPrintForClasses
     {
         if (list is null) return;
         {
@@ -44,14 +63,103 @@ internal class Program
                 item.Print();
         }
     }
+
+    /// <summary>
+    ///  Данная функция выводит количество элементов в каждом списке
+    /// </summary>
+    public static int NumderOfListElements<T>(List<T> list) 
+    {
+        return list.Count();
+    }
+
+    /// <summary>
+    ///  Данная функция выводит элемент списка по имени
+    /// </summary>
+    public static List<T>? FindByName<T>(List<T> list, string name) where T : IPrintForClasses
+    {
+        if (list is null) return null;
+        var searchresult = list.FindAll(p => p.Name == name);
+
+        if (searchresult.Count>0)
+        {
+            foreach (T item in searchresult)
+                item.Print();
+        }
+        else
+        {
+            Console.WriteLine("Не найдено ничего!");
+        }
+
+        return searchresult;
+    }
+
+
+    //!!!!!!!!!!!https://stackoverflow.com/questions/915795/pass-fieldname-as-a-parameter!!!!!!!!!
+    /// <summary>
+    ///  Данная функция выводит связанный по базе элемент
+    /// </summary>
+    public static List<R>? FindAllByRelatedElement<T, R>(List<T> list, string name, string relatedCikumnName, List<R> relatedList)
+        where T : IPrintForClasses
+        where R : IPrintForClasses
+    {
+        if (list is null) return null;
+        List<R> Res_list = new List<R>();
+
+        var propRelatedCikumnName = typeof(T).GetProperty(relatedCikumnName);
+
+        List<T> searchresult = new List<T>();
+
+        searchresult = list.Find(p => p.Name == name);
+
+        if (searchresult != null)        
+        {
+            if (searchresult > 0) 
+            {
+                foreach (T item in searchresult)
+                {
+                    int value = (int)propRelatedCikumnName.GetValue(item, null) - 1;
+                    Res_list.Add(relatedList[value]);
+                    Console.WriteLine($"Наименование {item.Name} соотнесено с {Res_list[0].Name} ");
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("Не найдено ничего!");
+        }
+        return Res_list;
+    }
+
 }
 
 
 class Factories : IPrintForClasses//Завод
 {
+    private string name = "Без названия";
     public string Name { get; set; } = "Без названия";
 
-    public string? Description { get; set; } // описание
+    public string? Description { get; set; } = ""; // описание
+
+    public string? TablePrint
+    {
+        get
+        {
+            if (Name!="")
+            {
+                return String.Format("Наименование: {0}  Описание: {1}", Name, Description);
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        set
+        {
+            name = value;   
+        }
+    }
+
     public void Print()
     {
         Console.WriteLine($"Наименование: {Name}  Описание: {Description}");
@@ -59,9 +167,30 @@ class Factories : IPrintForClasses//Завод
 }
 
 class Units : IPrintForClasses // Установка
-{    
+{
+    private string name = "Без названия";
     public string Name { get; set; } = "Без названия";
     public int? FactoryId { get; set; }      // производитель
+
+    public string? TablePrint
+    {
+        get
+        {
+            if (Name != "")
+            {
+                return String.Format("Наименование: {0}  Производитель: {1}", Name, FactoryId);
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        set
+        {
+            name = value;
+        }
+    }
 
     public void Print()
     {
@@ -71,11 +200,36 @@ class Units : IPrintForClasses // Установка
 
 class Tanks : IPrintForClasses //Резервуар
 {
+    private string name = "Без названия";
     public string Name { get; set; } = "Без названия";
 
     public int? Volume;                      // объём
     public int? Maxvolume;                   // максимальный объём
     public int? UnitId;                      // товар
+
+    public string? TablePrint
+    {
+        get
+        {
+            if (Name != "")
+            {
+                return String.Format(
+                    "Наименование: {0}  " +
+                    "Объём: {1}   " +
+                    "Максимальный объём: {2}   " +
+                    "Номер товара: {3}", Name, Volume, Maxvolume, UnitId);
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+        set
+        {
+            name = value;
+        }
+    }
 
     public void Print()
     {
@@ -89,5 +243,7 @@ class Tanks : IPrintForClasses //Резервуар
 
 interface IPrintForClasses
 {
+    string Name { get; set; }
+    string TablePrint { get; set; }
     void Print();
 }
