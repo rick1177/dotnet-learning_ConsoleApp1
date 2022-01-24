@@ -46,7 +46,7 @@ internal class Program
         Console.WriteLine("\n");
         Console.WriteLine("\n");
 
-        FindByRelatedElement(Units_list, "ГФУ-2", "FactoryId", Factories_list);
+        FindAllByRelatedElement(Units_list, "ГФУ-2", "FactoryId", Factories_list);
 
         //Tanks_list[0].Print();
 
@@ -98,7 +98,7 @@ internal class Program
     /// <summary>
     ///  Данная функция выводит связанный по базе элемент
     /// </summary>
-    public static List<R>? FindByRelatedElement<T, R>(List<T> list, string name, string relatedCikumnName, List<R> relatedList)
+    public static List<R>? FindAllByRelatedElement<T, R>(List<T> list, string name, string relatedCikumnName, List<R> relatedList)
         where T : IPrintForClasses
         where R : IPrintForClasses
     {
@@ -107,29 +107,26 @@ internal class Program
 
         var propRelatedCikumnName = typeof(T).GetProperty(relatedCikumnName);
 
-        var searchresult = list.FindAll(p => p.Name == name);
+        List<T> searchresult = new List<T>();
 
-        if (searchresult.Count > 0)
+        searchresult = list.Find(p => p.Name == name);
+
+        if (searchresult != null)        
         {
-            foreach (T item in searchresult)
+            if (searchresult > 0) 
             {
-                int value = (int)propRelatedCikumnName.GetValue(item, null) - 1;
-                Res_list.Add(relatedList[value]);
-                Console.WriteLine($"Наименование {item.Name} соотнесено с {Res_list[0].Name} ");
+                foreach (T item in searchresult)
+                {
+                    int value = (int)propRelatedCikumnName.GetValue(item, null) - 1;
+                    Res_list.Add(relatedList[value]);
+                    Console.WriteLine($"Наименование {item.Name} соотнесено с {Res_list[0].Name} ");
+                }
             }
         }
         else
         {
             Console.WriteLine("Не найдено ничего!");
         }
-
-        /*public int Method(Bar bar, string propertyName)
-        {
-            var prop = typeof(Bar).GetProperty(propertyName);
-            int value = (int)prop.GetValue(bar, null);
-            return value * 2;
-        }*/
-
         return Res_list;
     }
 
